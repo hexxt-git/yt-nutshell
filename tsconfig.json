@@ -4,12 +4,12 @@
 		"module": "commonjs",
 		"jsx": "react-jsx",
 		"outDir": "./dist",
-		"strict": true,
+		"strict": false,
 		"noEmit": true,
-		"lib": ["es2015"],
+		"lib": ["es2022"],
 		"esModuleInterop": true,
 		"skipLibCheck": true,
-		"forceConsistentCasingInFileNames": true,
+		"forceConsistentCasingInFileNames": false,
 		"noUnusedLocals": false
 	}
 }

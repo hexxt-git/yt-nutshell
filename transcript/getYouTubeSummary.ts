@@ -12,6 +12,8 @@ export async function getYouTubeSummary(
 
 	const youtube = await Innertube.create({
 		lang: 'en',
+		location: 'US',
+		retrieve_player: false,
 	});
 
 	const fetchTranscript = async (): Promise<string> => {
@@ -50,10 +52,12 @@ export async function getYouTubeSummary(
 			  You are an ai assistant tasked with one task which is to summarize the transcript of this youtube video into ${numberOfPoints} informative and short messages that get all the details.
 				the messages should be concise and cover everything about the videos content and the subject itself not the videos structure.
 				you must be as good at story telling within the format as possible. avoid sounding dry at all cost. unless its a serious topic be professional.
-				don't refer to the video as "the video" you are here to talk about its content
+				always take the righteous opinion but don't be too subjective
+				don't refer to the video as "the video" you are here to talk about its content.
 				avoid repetition by using pronouns between messages.
 				do not mention the intro, outro or sponsorship. write the messages as only the text separated by new line characters. no symbol or anything else.
 			  all these points should be only one sentence long.
+				the first message must clarify the context and situation and the last two must be a reflection on what happened then a prediction if it applies to the video. 
 				mostly speak in past tense mentioning the channel name sometimes without repeating names too much.
 				speak very very casually like a friend texting and with minimal punctuation without a dot at the end of messages.
 			  for generally unsafe words, things that can get you censored use asterisks and hashes in the middle of the word like s#x and d*gs. keep everything clean of nsfw content
