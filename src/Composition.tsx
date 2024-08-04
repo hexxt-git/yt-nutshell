@@ -16,7 +16,7 @@ type MessagesProps = {
 	messagesData: Message[] | null;
 };
 
-export const Messages: React.FC<MessagesProps> = ({messagesData}) => {
+const Messages: React.FC<MessagesProps> = ({messagesData}) => {
 	const frame = useCurrentFrame();
 
 	if (messagesData === null) {
@@ -29,9 +29,17 @@ export const Messages: React.FC<MessagesProps> = ({messagesData}) => {
 	);
 
 	return (
-		<AbsoluteFill className="bg-[#282b30] flex items-center justify-center text-[30px]">
+		<AbsoluteFill
+			style={{
+				backgroundColor: '#282b30',
+				display: 'flex',
+				alignItems: 'center',
+				justifyContent: 'center',
+			}}
+		>
 			{currentMessage && (
 				<>
+					{/* {currentMessage.endFrame - currentMessage.startFrame} */}
 					<MessageBox
 						username={currentMessage.username}
 						paragraph={currentMessage.paragraph}
@@ -45,3 +53,5 @@ export const Messages: React.FC<MessagesProps> = ({messagesData}) => {
 		</AbsoluteFill>
 	);
 };
+
+export {Messages as default};

@@ -1,3 +1,4 @@
+// import {random} from 'remotion';
 import UserAvatar from './static/car.png';
 import {Img} from 'remotion';
 import React from 'react';
@@ -29,24 +30,73 @@ export const MessageBox: React.FC<MessageBoxProps> = ({
 	paragraph,
 	date,
 }) => {
-
 	return (
 		<>
-			<div className="bg-[#424549] pt-4 pl-5 pb-6 pr-8 w-fit max-w-full rounded-sm">
-				<div className="flex items-start space-x-5">
+			<div
+				style={{
+					backgroundColor: '#424549',
+					margin: '1rem',
+					paddingTop: '1rem',
+					paddingLeft: '1.25rem',
+					paddingBottom: '1.5rem',
+					paddingRight: '2rem',
+					width: 'fit-content',
+					maxWidth: '100%',
+					borderRadius: '0.25rem',
+					fontSize: '30px',
+				}}
+			>
+				<div
+					style={{
+						display: 'flex',
+						alignItems: 'flex-start',
+						gap: '1.25rem',
+					}}
+				>
 					<Img
 						src={UserAvatar}
 						alt="User Avatar"
-						className="w-16 h-16 mt-3 rounded-full shadow-md"
+						style={{
+							width: '5rem',
+							height: '5rem',
+							borderRadius: '1000px',
+							boxShadow: '0 2px 4px 0 rgba(0, 0, 0, 0.2)',
+						}}
 					/>
-					<div className="flex-1">
-						<h3 className="text-white font-medium -mb-1">
+					<div
+						style={{
+							display: 'flex',
+							flexDirection: 'column',
+						}}
+					>
+						<h3
+							style={{
+								fontSize: '1em',
+								fontWeight: 500,
+								margin: 0,
+								color: 'orange',
+							}}
+						>
 							{username}
-							<span className="ml-2 text-gray-400 font-thin text-[0.7em]">
+							<span
+								style={{
+									marginLeft: '1rem',
+									color: 'rgba(255, 255, 255, 0.4)',
+									fontWeight: 100,
+									fontSize: '0.75em',
+								}}
+							>
 								{formatTime(date)}
 							</span>
 						</h3>
-						<p className="text-gray-100 font-thin leading-[1.2em]">
+						<p
+							style={{
+								margin: 0,
+								color: 'rgba(255, 255, 255, 0.8)',
+								fontWeight: 100,
+								lineHeight: '1.2em',
+							}}
+						>
 							{paragraph}
 						</p>
 					</div>

@@ -28,11 +28,28 @@ export async function getYouTubeSummary(
 			const model = genAI.getGenerativeModel({model: 'gemini-1.5-flash'});
 
 			const prompt = `
-        You are an ai assistant tasked with one task which is to summarize the transcript of this youtube video into ${numberOfPoints} informative and short bullet points that get all the details the bullets should be concise and cover everything about the videos content and the subject itself not the videos structure. do not mention the intro outro or the videos structure. write the bullet points as only the text separated by new lines only. no symbol or anything else.
-        all these points should be only one sentence long and in the past tense. speak very casually like an internet influencer
-        for generally unsafe words, things that can get you censored use asterisks and hashes in the middle of the word like s#x and d*gs. keep everything clean of nsfw content 
-        the video transcript: \n${transcript}
-      `;
+			  You are an ai assistant tasked with one task which is to summarize the transcript of this youtube video into ${numberOfPoints} informative and short messages that get all the details.
+				the messages should be concise and cover everything about the videos content and the subject itself not the videos structure.
+				avoid repetition by using pronouns between messages.
+				do not mention the intro, outro or sponsorship. write the messages as only the text separated by new line characters. no symbol or anything else.
+			  all these points should be only one sentence long.
+				mostly speak in past tense and 3rd person without repeating names too much.
+				speak very very casually like a friend texting and with minimal punctuation without a dot at the end of messages.
+			  for generally unsafe words, things that can get you censored use asterisks and hashes in the middle of the word like s#x and d*gs. keep everything clean of nsfw content
+			  the video transcript: \n${transcript}
+			`;
+			// const prompt = `
+			// 	You are a youtube content creator your job is to summarize content into short form from its transcript.
+			// 	you receive a videos transcript and output the following format:
+			// 		intro section should have something like "so charlie recently announced that he is retiring" or "things are heating up over in LA james is dissing out people left and right"
+			// 		content section divided into exactly ${numberOfPoints} points separated by new lines that gets all the details from the video in a concise manner. each bullet point should be one line of text or one sentence
+			// 		outro part with something like "i just saved precious minutes for you so why don't you hit that like button and subscribe for more content". they don't have to be exactly like this but always make sure to include a call for action
+			// 	use pronouns to avoid repeating the same names too often between bullet points
+			// 	talk about everything in the past tense and talk about the videos content not the structure itself so don't mention that there was some intro, outro or sponsorship
+			// 	separate everything by new lines with no extra punctuation or anything to make it look like a list. even when the intro/outro get too long separate by new lines
+			//   for generally unsafe words, things that can get you censored use asterisks and hashes in the middle of the word like s#x and d*gs. keep everything clean of nsfw content
+			// 	work with this transcript: ${transcript}
+			// `;
 
 			console.log('prompting gemini..', {url});
 			const geminiResult = await model.generateContent(prompt);
@@ -69,6 +86,11 @@ export async function getYouTubeSummary(
 	throw new Error('Unexpected error occurred.');
 }
 
+// Example usage:
+// getYouTubeSummary("https://www.youtube.com/watch?v=g8wZ85YWfas", 10)
+//   .then((summary) => console.log(summary))
+//   .catch((error) => console.error("Error:", error));
+
 import express from 'express';
 import cors from 'cors';
 
@@ -90,11 +112,12 @@ app.get('/', async (req, res) => {
 		const transcript = await getYouTubeSummary(url, points);
 		res.json(transcript);
 	} catch (error) {
+		const errorMessage = (error as {message: string}).message;
 		console.error('Error fetching YouTube summary:', error);
 
-		if (error.message.includes('Error fetching transcript:')) {
+		if (errorMessage.includes('Error fetching transcript:')) {
 			res.status(500).json({error: 'Failed to fetch YouTube transcript.'});
-		} else if (error.message.includes('Error generating summary:')) {
+		} else if (errorMessage.includes('Error generating summary:')) {
 			res.status(500).json({error: 'Failed to generate YouTube summary.'});
 		} else {
 			res.status(500).json({error: 'An unexpected error occurred.'});
@@ -105,8 +128,3 @@ app.get('/', async (req, res) => {
 app.listen(port, () => {
 	console.log(`Server is running on http://localhost:${port}`);
 });
-
-// Example usage:
-// getYouTubeSummary("https://www.youtube.com/watch?v=g8wZ85YWfas", 10)
-//   .then((summary) => console.log(summary))
-//   .catch((error) => console.error("Error:", error));

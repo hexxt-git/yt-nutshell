@@ -1,5 +1,5 @@
 import {Composition} from 'remotion';
-import {MyComposition} from './MyComposition';
+import Messages from './Composition';
 import './style.css';
 import axios from 'axios';
 import React from 'react';
@@ -12,14 +12,18 @@ type Message = {
 	endFrame: number;
 };
 
+const averageWPS = 4.5;
+const fps = 30;
+
 export const RemotionRoot: React.FC = () => {
 	return (
 		<>
 			<Composition
 				id="MyComp"
-				component={MyComposition}
-				durationInFrames={1500}
-				fps={30}
+				component={Messages}
+				// We'll calculate durationInFrames dynamically in calculateMetadata
+				durationInFrames={1} // Temporary placeholder
+				fps={fps}
 				width={1280}
 				height={720}
 				defaultProps={{
@@ -29,19 +33,35 @@ export const RemotionRoot: React.FC = () => {
 					try {
 						const {data} = await axios.get('http://localhost:5555/', {
 							params: {
-								url: 'https://www.youtube.com/watch?v=7a-J7x_sGvU',
+								url: 'https://www.youtube.com/watch?v=Lrx55AlJ-Uo',
 							},
 							timeout: 100e4,
 						});
 
-						const formattedMessages: Message[] = data.map(
-							(msg: string, index: number) => ({
-								username: 'timeSaver832',
+						let currentStartFrame = 0;
+						const formattedMessages: Message[] = data.map((msg: string) => {
+							const words = msg.split(' ').length;
+							const durationInSeconds = words / averageWPS + 1;
+							const durationInFrames = durationInSeconds * fps;
+							const startFrame = currentStartFrame;
+							const endFrame = startFrame + durationInFrames - 1;
+
+							currentStartFrame = endFrame + 1;
+
+							return {
+								username: 'TimeSaver832',
 								paragraph: msg,
 								date: new Date(),
-								startFrame: index * 100, // Example frame intervals
-								endFrame: (index + 1) * 100 - 1,
-							}),
+								startFrame,
+								endFrame,
+							};
+						});
+
+						// Calculate total duration
+						const totalDurationInFrames = Math.ceil(
+							formattedMessages.reduce((total, message) => {
+								return total + (message.endFrame - message.startFrame + 1);
+							}, 0),
 						);
 
 						return {
@@ -49,6 +69,7 @@ export const RemotionRoot: React.FC = () => {
 								...props,
 								messagesData: formattedMessages,
 							},
+							durationInFrames: totalDurationInFrames, // Set dynamic duration
 						};
 					} catch (error) {
 						console.error('Error fetching messages:', error);
@@ -58,6 +79,7 @@ export const RemotionRoot: React.FC = () => {
 								...props,
 								messagesData: [],
 							},
+							durationInFrames: 1, // Default duration if error
 						};
 					}
 				}}

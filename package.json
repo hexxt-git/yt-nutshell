@@ -16,14 +16,16 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.16.0",
-    "@remotion/bundler": "4.0.191",
-    "@remotion/cli": "4.0.191",
+    "@remotion/bundler": "^4.0.191",
+    "@remotion/cli": "^4.0.191",
+    "@remotion/renderer": "^4.0.191",
     "@remotion/zod-types": "4.0.191",
     "axios": "^1.7.3",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "remotion": "4.0.191",
+    "remotion": "^4.0.191",
     "youtube-transcript": "^1.2.1",
+    "yt-nutshell": "file:",
     "zod": "3.22.3"
   },
   "devDependencies": {
@@ -32,7 +34,6 @@
     "@types/web": "^0.0.143",
     "eslint": "^8.43.0",
     "prettier": "^3.2.5",
-    "@remotion/tailwind": "4.0.191",
     "typescript": "5.4.5"
   },
   "scripts": {
