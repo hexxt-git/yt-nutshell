@@ -1,6 +1,7 @@
+import {Innertube} from 'youtubei.js/web';
+import {VideoInfo} from 'youtubei.js/dist/src/parser/youtube';
 import {YoutubeTranscript} from 'youtube-transcript';
 import {GoogleGenerativeAI} from '@google/generative-ai';
-import ytSearch from 'youtube-search-api';
 
 export async function getYouTubeSummary(
 	url: string,
@@ -8,6 +9,10 @@ export async function getYouTubeSummary(
 ): Promise<string[]> {
 	const MAX_RETRIES = 5;
 	let retries = 0;
+
+	const youtube = await Innertube.create({
+		lang: 'en',
+	});
 
 	const fetchTranscript = async (): Promise<string> => {
 		try {
@@ -23,25 +28,19 @@ export async function getYouTubeSummary(
 		}
 	};
 
-	const fetchInfo = async (): Promise<string> => {
-		try {
-			const searchData = await ytSearch.GetVideoDetails(url.split('=').at(-1));
-			const infoObject = {
-				title: searchData.title,
-				channel: searchData.channel,
-				description: searchData.description.slice(0, 300) + '...',
-				keywords: searchData.keywords,
-			};
-			return JSON.stringify(infoObject);
-		} catch (error) {
-			console.error('Error fetching info:', error);
-			throw error;
-		}
+	const fetchOverview = async (info: VideoInfo) => {
+		return JSON.stringify({
+			title: info.basic_info.title ?? '',
+			channel: info.basic_info.channel?.name ?? '',
+			description: info.basic_info.short_description ?? '',
+			duration:
+				Math.round(((info.basic_info.duration ?? 0) / 60) * 10) / 10 + 'minute',
+		});
 	};
 
 	const generateSummary = async (
 		transcript: string,
-		info: string,
+		overview: string,
 	): Promise<string[]> => {
 		try {
 			const genAI = new GoogleGenerativeAI(process.env.geminiapi ?? '');
@@ -58,7 +57,7 @@ export async function getYouTubeSummary(
 				mostly speak in past tense mentioning the channel name sometimes without repeating names too much.
 				speak very very casually like a friend texting and with minimal punctuation without a dot at the end of messages.
 			  for generally unsafe words, things that can get you censored use asterisks and hashes in the middle of the word like s#x and d*gs. keep everything clean of nsfw content
-				video information use it for your commentary: ${info}
+				video information use it for your commentary: ${overview}
 			  the video transcript: \n${transcript}
 			`.replace(/\s{2,}/g, ' ');
 
@@ -91,9 +90,10 @@ export async function getYouTubeSummary(
 
 	while (retries < MAX_RETRIES) {
 		try {
+			const info = await youtube.getInfo(url);
 			const transcript = await fetchTranscript();
-			const info = await fetchInfo();
-			const summary = await generateSummary(transcript, info);
+			const overview = await fetchOverview(info);
+			const summary = await generateSummary(transcript, overview);
 			return summary;
 		} catch (error) {
 			retries++;
