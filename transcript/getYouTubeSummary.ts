@@ -72,12 +72,13 @@ export async function getYouTubeSummary(
 			// 	talk about everything in the past tense and talk about the videos content not the structure itself so don't mention that there was some intro, outro or sponsorship
 			// 	separate everything by new lines with no extra punctuation or anything to make it look like a list. even when the intro/outro get too long separate by new lines
 			//   for generally unsafe words, things that can get you censored use asterisks and hashes in the middle of the word like s#x and d*gs. keep everything clean of nsfw content
+			// 	video information use it for your commentary: ${info}
 			// 	work with this transcript: ${transcript}
-			// `;
+			// `.replace(/\s{2,}/g, ' ');
 
 			console.log('prompting gemini..', {url});
 			const geminiResult = await model.generateContent(prompt);
-			console.log('summary obtained');
+			console.log('summary obtained', {url});
 			return geminiResult.response
 				.text()
 				.split('\n')

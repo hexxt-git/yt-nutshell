@@ -13,7 +13,7 @@ const client = new Client({
 const prefix = '#'; // Change this to your desired prefix
 
 client.on('ready', () => {
-	console.log(`Logged in as ${client.user.tag}`);
+	console.log(`Logged in as ${client.user?.tag}`);
 });
 
 client.on('messageCreate', async (message) => {
@@ -26,14 +26,13 @@ client.on('messageCreate', async (message) => {
 		.split(/ +/);
 	const command = args.shift()?.toLowerCase();
 
-	// Example command: ping
 	if (command === 'ping') {
 		message.reply('Pong!');
 	}
 
-	// Example command: nuts
 	if (command === 'nuts') {
 		console.log(message.content);
+        message.reply('generating summary wait...')
 		const id = args.join('').split('=').at(-1) ?? '';
 		await renderVideoOnServer(id);
 		const videoPath = `./out/${id}.mp4`;
@@ -53,5 +52,5 @@ client.on('messageCreate', async (message) => {
 	}
 });
 
-// Replace with your actual bot token
+
 client.login(process.env.discordapi);

@@ -3,6 +3,8 @@ import {renderMedia, selectComposition} from '@remotion/renderer';
 import path from 'path';
 
 export async function renderVideoOnServer(url: string) {
+	const id = url.split('=').at(-1);
+	console.log('started job', {url: id});
 	// Bundle your video
 	const bundled = await bundle(path.resolve('video/index.ts'));
 
@@ -17,15 +19,19 @@ export async function renderVideoOnServer(url: string) {
 		throw new Error('Could not find composition with id Root');
 	}
 
+	const outputLocation = process.cwd().includes('video')
+		? `../out/${id}.mp4`
+		: `./out/${id}.mp4`;
+
 	// Render the video
 	await renderMedia({
 		composition,
 		serveUrl: bundled,
 		codec: 'h264',
-		outputLocation: `../out/${url.split('=').at(-1)}.mp4`,
+		outputLocation,
 	});
 
-	console.log('finished job', {url});
+	console.log('finished job', {url: id});
 	return true;
 }
 
