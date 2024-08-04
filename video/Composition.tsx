@@ -13,10 +13,10 @@ type Message = {
 };
 
 type MessagesProps = {
-	messagesData: Message[] | null;
+	messagesData: Message[];
 };
 
-const Messages: React.FC<MessagesProps> = ({messagesData}) => {
+const Composition: React.FC<MessagesProps> = ({messagesData}) => {
 	const frame = useCurrentFrame();
 
 	if (messagesData === null) {
@@ -54,4 +54,4 @@ const Messages: React.FC<MessagesProps> = ({messagesData}) => {
 	);
 };
 
-export {Messages as default};
+export {Composition as default};

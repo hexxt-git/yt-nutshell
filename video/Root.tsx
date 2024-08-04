@@ -1,4 +1,4 @@
-import {Composition} from 'remotion';
+import {Composition, getInputProps} from 'remotion';
 import Messages from './Composition';
 import './style.css';
 import axios from 'axios';
@@ -19,7 +19,7 @@ export const RemotionRoot: React.FC = () => {
 	return (
 		<>
 			<Composition
-				id="MyComp"
+				id="Root"
 				component={Messages}
 				// We'll calculate durationInFrames dynamically in calculateMetadata
 				durationInFrames={1} // Temporary placeholder
@@ -27,13 +27,14 @@ export const RemotionRoot: React.FC = () => {
 				width={1280}
 				height={720}
 				defaultProps={{
-					messagesData: null, // Initial value
+					messagesData: [], // Initial value
 				}}
 				calculateMetadata={async ({props}) => {
 					try {
+						const {url} = getInputProps();
 						const {data} = await axios.get('http://localhost:5555/', {
 							params: {
-								url: 'https://www.youtube.com/watch?v=Lrx55AlJ-Uo',
+								url,
 							},
 							timeout: 100e4,
 						});
