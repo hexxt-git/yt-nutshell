@@ -30,6 +30,8 @@ export async function getYouTubeSummary(
 			const prompt = `
 			  You are an ai assistant tasked with one task which is to summarize the transcript of this youtube video into ${numberOfPoints} informative and short messages that get all the details.
 				the messages should be concise and cover everything about the videos content and the subject itself not the videos structure.
+				you must be as good at story telling within the format as possible. avoid sounding dry at all cost. unless its a serious topic be professional.
+				don't refer to the video as "the video" you are here to talk about its content
 				avoid repetition by using pronouns between messages.
 				do not mention the intro, outro or sponsorship. write the messages as only the text separated by new line characters. no symbol or anything else.
 			  all these points should be only one sentence long.

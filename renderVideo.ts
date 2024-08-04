@@ -2,10 +2,10 @@ import {bundle} from '@remotion/bundler';
 import {renderMedia, selectComposition} from '@remotion/renderer';
 import path from 'path';
 
-async function renderVideoOnServer(url: string) {
+export async function renderVideoOnServer(url: string) {
 	console.log('rendering...', {url});
 	// Bundle your video
-	const bundled = await bundle(path.resolve('./src/index.ts'));
+	const bundled = await bundle(path.resolve('./video/index.ts'));
 
 	// Retrieve your composition
 	const composition = await selectComposition({

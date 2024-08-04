@@ -31,7 +31,7 @@ export const RemotionRoot: React.FC = () => {
 				}}
 				calculateMetadata={async ({props}) => {
 					try {
-						const {url} = getInputProps();
+						const url = getInputProps().url ?? '0XKYMt5mGpQ';
 						const {data} = await axios.get('http://localhost:5555/', {
 							params: {
 								url,
