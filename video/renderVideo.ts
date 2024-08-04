@@ -3,9 +3,8 @@ import {renderMedia, selectComposition} from '@remotion/renderer';
 import path from 'path';
 
 export async function renderVideoOnServer(url: string) {
-	console.log('rendering...', {url});
 	// Bundle your video
-	const bundled = await bundle(path.resolve('./video/index.ts'));
+	const bundled = await bundle(path.resolve('video/index.ts'));
 
 	// Retrieve your composition
 	const composition = await selectComposition({
@@ -23,10 +22,11 @@ export async function renderVideoOnServer(url: string) {
 		composition,
 		serveUrl: bundled,
 		codec: 'h264',
-		outputLocation: `./out/${url.split('=').at(-1)}.mp4`,
+		outputLocation: `../out/${url.split('=').at(-1)}.mp4`,
 	});
 
-	console.log('Video rendered successfully!');
+	console.log('finished job', {url});
+	return true;
 }
 
 // Call the rendering function
