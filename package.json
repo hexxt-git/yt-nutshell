@@ -29,6 +29,7 @@
     "react-dom": "^18.0.0",
     "remotion": "^4.0.191",
     "transcript": "^0.0.6",
+    "youtube-search-api": "^1.2.2",
     "youtube-transcript": "^1.2.1",
     "yt-nutshell": "file:",
     "zod": "3.22.3"
