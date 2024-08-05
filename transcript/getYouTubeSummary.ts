@@ -1,7 +1,7 @@
 import {Innertube} from 'youtubei.js/web';
 import {VideoInfo} from 'youtubei.js/dist/src/parser/youtube';
-import {YoutubeTranscript} from 'youtube-transcript';
 import {GoogleGenerativeAI} from '@google/generative-ai';
+import fs from 'fs/promises';
 
 export async function getYouTubeSummary(
 	url: string,
@@ -16,13 +16,12 @@ export async function getYouTubeSummary(
 		retrieve_player: false,
 	});
 
-	const fetchTranscript = async (): Promise<string> => {
+	const fetchTranscript = async (info: VideoInfo): Promise<string> => {
 		try {
-			const transcriptData = await YoutubeTranscript.fetchTranscript(url, {
-				lang: 'en',
-			});
-			return transcriptData
-				.map((entry: {text: string}) => entry.text)
+			const info = await youtube.getInfo(url);
+			const transcriptData = await info.getTranscript();
+			return transcriptData.transcript.content.body.initial_segments
+				.map((segment) => segment.snippet.text)
 				.join('\n');
 		} catch (error) {
 			console.error('Error fetching transcript:', error);
@@ -95,9 +94,10 @@ export async function getYouTubeSummary(
 	while (retries < MAX_RETRIES) {
 		try {
 			const info = await youtube.getInfo(url);
-			const transcript = await fetchTranscript();
+			const transcript = await fetchTranscript(info);
 			const overview = await fetchOverview(info);
 			const summary = await generateSummary(transcript, overview);
+			fs.writeFile(`./out/${url.split('=').at(-1)}.txt`, summary.join('\n\n'));
 			return summary;
 		} catch (error) {
 			retries++;
