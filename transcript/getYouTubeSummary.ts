@@ -16,7 +16,7 @@ export async function getYouTubeSummary(
 		retrieve_player: false,
 	});
 
-	const fetchTranscript = async (info: VideoInfo): Promise<string> => {
+	const fetchTranscript = async (): Promise<string> => {
 		try {
 			const info = await youtube.getInfo(url);
 			const transcriptData = await info.getTranscript();
